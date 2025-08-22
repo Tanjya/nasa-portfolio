@@ -1,9 +1,10 @@
+// js/mars.js
 import { $, show, hide, openModal } from './ui.js';
 
-const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc'; 
-const BASE = 'https://api.nasa.gov/mars-photos/api/v1';
+const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc'; // Your NASA API Key
+const ROVER_BASE_URL = 'https://api.nasa.gov/mars-photos/api/v1/rovers';
 
-// Available cameras by rover (NASA docs)
+// Cameras available per rover (from NASA docs)
 const CAMERA_OPTIONS = {
   curiosity: [
     { id: 'FHAZ', name: 'Front Hazard Avoidance Camera' },
@@ -51,7 +52,7 @@ function setError(message = '') {
   show(box);
 }
 
-// Fill the camera <select> based on current rover
+// Populate camera <select> based on current rover
 function populateCameras() {
   const rover = $('#roverSel').value;
   const camSel = $('#cameraSel');
@@ -65,27 +66,26 @@ function populateCameras() {
   });
 }
 
-// Build URL: /rovers/{rover}/photos?earth_date=YYYY-MM-DD&camera={CAM}&api_key=KEY
-function buildUrl({ rover, camera, earthDate }) {
-  const url = new URL(`${BASE}/rovers/${rover}/photos`);
-  url.searchParams.set('earth_date', earthDate);
-  if (camera) url.searchParams.set('camera', camera);
-  url.searchParams.set('api_key', API_KEY);
-  return url.toString();
+// Build full API URL with template literals
+function buildMarsUrl(rover, camera, earthDate) {
+  let url = `${ROVER_BASE_URL}/${rover}/photos?earth_date=${earthDate}&api_key=${API_KEY}`;
+  if (camera) url += `&camera=${camera}`;
+  return url;
 }
 
-// Fetch photos
-async function fetchPhotos(params) {
-  const res = await fetch(buildUrl(params));
+// Fetch photos from API
+async function fetchPhotos(rover, camera, earthDate) {
+  const url = buildMarsUrl(rover, camera, earthDate);
+  const res = await fetch(url);
   if (!res.ok) {
     const text = await res.text().catch(() => '');
-    throw new Error(`Request failed (${res.status}): ${text || 'Unknown error'}`);
+    throw new Error(`Mars photos request failed (${res.status}): ${text || 'Unknown error'}`);
   }
   const data = await res.json();
   return data.photos || [];
 }
 
-// Render the grid
+// Render photo grid
 function renderGrid(photos) {
   const grid = $('#grid');
   grid.innerHTML = '';
@@ -98,11 +98,9 @@ function renderGrid(photos) {
   }
 
   photos.forEach((p) => {
-    // Card
     const card = document.createElement('article');
     card.className = 'bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:bg-white/10 transition';
 
-    // Image
     const img = document.createElement('img');
     img.src = p.img_src;
     img.alt = `${p.rover?.name || 'Rover'} — ${p.camera?.full_name || p.camera?.name || 'Camera'}`;
@@ -110,7 +108,6 @@ function renderGrid(photos) {
     img.className = 'w-full h-48 object-cover bg-black';
     card.appendChild(img);
 
-    // Meta
     const meta = document.createElement('div');
     meta.className = 'p-3 text-xs';
     meta.innerHTML = `
@@ -122,14 +119,13 @@ function renderGrid(photos) {
     `;
     card.appendChild(meta);
 
-    // Click → open modal with larger image + details
+    // Open modal with large image + details
     card.addEventListener('click', () => {
-      // We’ll reuse the modal shell but fill custom content
       $('#modalImg').src = p.img_src;
       $('#modalImg').alt = img.alt;
       $('#modalTitle').textContent = `${p.rover?.name || 'Rover'} — ${p.camera?.full_name || p.camera?.name || ''}`;
       $('#modalMeta').textContent = `Earth date: ${p.earth_date || ''} • Sol: ${p.sol ?? ''} • Status: ${p.rover?.status || ''}`;
-      // openModal sets title/body; we already filled custom fields, so pass empty strings
+      // We already filled modal content; openModal just shows it
       openModal('', '');
     });
 
@@ -137,24 +133,20 @@ function renderGrid(photos) {
   });
 }
 
-// Choose a sensible default date:
-// Curiosity is active; picking a very recent date may still yield 0 photos.
-// We'll default to 2016-08-06 (Curiosity anniversary) as a safe example,
-// but you can try today for fun.
+// A default that usually returns photos (so beginners see results immediately)
 function defaultEarthDate() {
-  return '2016-08-06';
+  return '2016-08-06'; // Curiosity landing anniversary
 }
 
 async function load() {
   setError('');
   setLoading(true);
   try {
-    const params = {
-      rover: $('#roverSel').value,
-      camera: $('#cameraSel').value,
-      earthDate: $('#earthDate').value || defaultEarthDate(),
-    };
-    const photos = await fetchPhotos(params);
+    const rover = $('#roverSel').value;
+    const camera = $('#cameraSel').value;
+    const earthDate = $('#earthDate').value || defaultEarthDate();
+
+    const photos = await fetchPhotos(rover, camera, earthDate);
     renderGrid(photos);
   } catch (e) {
     console.error(e);
@@ -166,25 +158,15 @@ async function load() {
 }
 
 function initInputs() {
-  // Initial cameras based on default rover
-  populateCameras();
-
-  // When rover changes, refresh camera options
-  $('#roverSel').addEventListener('change', () => {
-    populateCameras();
-  });
-
-  // Set a default date so beginners see results immediately
+  populateCameras(); // initial camera list based on default rover
+  $('#roverSel').addEventListener('change', populateCameras);
   $('#earthDate').value = defaultEarthDate();
-
-  // Load on button click
   $('#loadBtn').addEventListener('click', load);
 }
 
 function init() {
   initInputs();
-  // Initial fetch on page load
-  load();
+  load(); // initial load on page open
 }
 
 init();
