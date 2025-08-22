@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NASA Daily Explorer — APOD</title>
+  <!-- Tailwind via CDN keeps things simple for a beginner -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100">
+  <!-- Navbar: simple links to other sections (we'll build later) -->
+  <header class="border-b border-white/10">
+    <nav class="mx-auto max-w-6xl flex items-center justify-between p-4">
+      <a href="index.html" class="font-semibold tracking-wide">🚀 NASA Daily Explorer</a>
+      <ul class="flex gap-4 text-sm">
+        <li><a class="hover:underline" href="index.html">APOD</a></li>
+        <li><a class="hover:underline" href="mars.html">Mars</a></li>
+        <li><a class="hover:underline" href="asteroids.html">Asteroids</a></li>
+        <li><a class="hover:underline" href="search.html">Search</a></li>
+      </ul>
+      <button id="themeToggle" class="text-xs px-3 py-1 border border-white/20 rounded">
+        Toggle Theme
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main content area -->
+  <main class="mx-auto max-w-3xl p-4">
+    <!-- Controls: you pick a date and press Load -->
+    <section class="mb-4 flex items-end gap-3">
+      <div>
+        <label for="apodDate" class="block text-xs text-gray-400 mb-1">Pick a date</label>
+        <input id="apodDate" type="date" class="bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm" />
+      </div>
+      <button id="loadBtn" class="px-4 py-2 text-sm rounded bg-white/10 hover:bg-white/20 transition">
+        Load
+      </button>
+      <!-- Simple loading hint -->
+      <span id="loading" class="text-xs text-gray-400 hidden">Loading...</span>
+    </section>
+
+    <!-- The APOD card (starts hidden for a smooth fade-in) -->
+    <article id="apodCard" class="opacity-0 translate-y-2 transition-all duration-500 bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+      <div id="mediaWrap" class="aspect-video bg-black"></div>
+      <div class="p-4">
+        <h1 id="title" class="text-xl font-semibold mb-1">—</h1>
+        <p id="date" class="text-xs text-gray-400 mb-3">—</p>
+        <p id="desc" class="text-sm leading-6 line-clamp-4 mb-2">—</p>
+        <button id="readMore" class="text-xs underline underline-offset-4">Read more</button>
+      </div>
+    </article>
+
+    <!-- Error box (hidden by default) -->
+    <p id="errorBox" class="hidden mt-4 text-sm text-red-400"></p>
+  </main>
+
+  <!-- Modal shell (UI only; content is filled by JS) -->
+  <div id="modal" class="fixed inset-0 hidden">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative mx-auto max-w-2xl bg-gray-900 border border-white/10 rounded-xl p-6 my-10">
+      <button id="modalClose" class="absolute top-2 right-3 text-xl" aria-label="Close modal">&times;</button>
+      <h2 id="modalTitle" class="text-lg font-semibold mb-2"></h2>
+      <p id="modalBody" class="text-sm leading-7 text-gray-200"></p>
+    </div>
+  </div>
+
+  <script type="module" src="js/ui.js"></script>
+  <script type="module" src="js/apod.js"></script>
+</body>
+</html>
