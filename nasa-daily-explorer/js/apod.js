@@ -1,6 +1,6 @@
 import { $, show, hide, openModal } from './ui.js';
 
-const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc'; // replace later with your own key to avoid rate limits
+const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc'; 
 const ENDPOINT = 'https://api.nasa.gov/planetary/apod';
 
 function setLoading(isLoading) {
