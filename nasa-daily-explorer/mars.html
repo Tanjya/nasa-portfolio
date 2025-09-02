@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-950 text-gray-100">
-  <!-- Navbar (same as index.html) -->
+  <!-- Navbar -->
   <header class="border-b border-white/10">
     <nav class="mx-auto max-w-6xl flex items-center justify-between p-4">
       <a href="index.html" class="font-semibold tracking-wide">🚀 NASA Daily Explorer</a>
@@ -17,9 +17,7 @@
         <li><a class="hover:underline" href="asteroids.html">Asteroids</a></li>
         <li><a class="hover:underline" href="search.html">Search</a></li>
       </ul>
-      <button id="themeToggle" class="text-xs px-3 py-1 border border-white/20 rounded">
-        Toggle Theme
-      </button>
+      <button id="themeToggle" class="text-xs px-3 py-1 border border-white/20 rounded">Toggle Theme</button>
     </nav>
   </header>
 
@@ -34,41 +32,31 @@
           <option value="spirit">Spirit</option>
         </select>
       </div>
-
       <div>
         <label for="cameraSel" class="block text-xs text-gray-400 mb-1">Camera</label>
-        <select id="cameraSel" class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm">
-          <!-- options are populated dynamically based on rover -->
-        </select>
+        <select id="cameraSel" class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm"></select>
       </div>
-
       <div>
         <label for="earthDate" class="block text-xs text-gray-400 mb-1">Earth date</label>
         <input id="earthDate" type="date" class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm" />
       </div>
-
       <div class="flex gap-2">
-        <button id="loadBtn" class="flex-1 px-4 py-2 text-sm rounded bg-white/10 hover:bg-white/20 transition">
-          Load photos
-        </button>
+        <button id="loadBtn" class="flex-1 px-4 py-2 text-sm rounded bg-white/10 hover:bg-white/20 transition">Load photos</button>
         <span id="loading" class="text-xs text-gray-400 self-center hidden">Loading...</span>
       </div>
     </section>
 
-    <!-- Results -->
+    <!-- States + Results -->
     <section id="emptyState" class="hidden mt-8 text-center text-sm text-gray-400">
       No photos for this selection. Try another date, rover, or camera.
     </section>
-
-    <section id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <!-- photo cards will be injected here -->
-    </section>
+    <section id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></section>
 
     <!-- Error -->
     <p id="errorBox" class="hidden mt-4 text-sm text-red-400"></p>
   </main>
 
-  <!-- Modal (reused) -->
+  <!-- Modal (shared design, but with image slot) -->
   <div id="modal" class="fixed inset-0 hidden">
     <div class="absolute inset-0 bg-black/70"></div>
     <div class="relative mx-auto max-w-3xl bg-gray-900 border border-white/10 rounded-xl p-0 my-10 overflow-hidden">
@@ -81,7 +69,8 @@
     </div>
   </div>
 
-  <script type="module" src="js/ui.js"></script>
-  <script type="module" src="js/mars.js"></script>
+  <!-- Scripts -->
+  <script type="module" src="./js/ui.js"></script>
+  <script type="module" src="./js/mars.js"></script>
 </body>
 </html>
