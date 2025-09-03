@@ -1,5 +1,6 @@
 // js/mars.js
 import { $, show, hide, openModal } from './ui.js';
+console.log('MARS: script booted');
 
 const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc';
 const ROVER_BASE_URL = 'https://api.nasa.gov/mars-photos/api/v1/rovers';
