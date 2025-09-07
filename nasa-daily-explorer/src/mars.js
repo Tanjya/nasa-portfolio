@@ -1,9 +1,15 @@
 // js/mars.js
+// Load this file with: <script type="module" src="js/mars.js"></script>
 import { $, show, hide, openModal } from './ui.js';
+
 console.log('MARS: script booted');
 
-const API_KEY = 'sKFtJEmy8JWNkrSD5jPeiiRldbcMzVzpwyyTuixc';
-const ROVER_BASE_URL = 'https://api.nasa.gov/mars-photos/api/v1/rovers';
+/* ------------------------------ Config ------------------------------ */
+
+// Use DEMO_KEY to verify flow; swap to your real key after.
+// Get one at https://api.nasa.gov
+const API_KEY = '2lWc2sGkMOhTHRThafaKdNcYGP9dHqgawJs6jG2Y';
+const ROVER_BASE = 'https://api.nasa.gov/mars-photos/api/v1/rovers';
 
 const CAMERA_OPTIONS = {
   curiosity: [
@@ -20,37 +26,52 @@ const CAMERA_OPTIONS = {
     { id: 'RHAZ', name: 'Rear Hazard Avoidance Camera' },
     { id: 'NAVCAM', name: 'Navigation Camera' },
     { id: 'PANCAM', name: 'Panoramic Camera' },
-    { id: 'MINITES', name: 'Miniature Thermal Emission Spectrometer (Mini-TES)' },
+    { id: 'MINITES', name: 'Mini-TES' },
   ],
   spirit: [
     { id: 'FHAZ', name: 'Front Hazard Avoidance Camera' },
     { id: 'RHAZ', name: 'Rear Hazard Avoidance Camera' },
     { id: 'NAVCAM', name: 'Navigation Camera' },
     { id: 'PANCAM', name: 'Panoramic Camera' },
-    { id: 'MINITES', name: 'Miniature Thermal Emission Spectrometer (Mini-TES)' },
+    { id: 'MINITES', name: 'Mini-TES' },
   ],
 };
+
+/* ---------------------------- UI helpers ---------------------------- */
 
 function setLoading(isLoading) {
   const loading = $('#loading');
   const btn = $('#loadBtn');
-  if (isLoading) {
-    show(loading);
-    btn?.setAttribute('disabled', 'true');
-    btn?.classList.add('opacity-50', 'cursor-not-allowed');
-  } else {
-    hide(loading);
-    btn?.removeAttribute('disabled');
-    btn?.classList.remove('opacity-50', 'cursor-not-allowed');
+  if (loading) (isLoading ? show(loading) : hide(loading));
+  if (btn) {
+    if (isLoading) {
+      btn.setAttribute('disabled', 'true');
+      btn.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+      btn.removeAttribute('disabled');
+      btn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
   }
 }
 
 function setError(message = '') {
   const box = $('#errorBox');
-  if (!box) { console.warn('Missing #errorBox. Error:', message); return; }
-  if (!message) { hide(box); return; }
-  box.textContent = message;
-  show(box);
+  if (!box) {
+    // Soft warn, but never break the app if #errorBox is missing
+    if (message) console.warn('Missing #errorBox. Error:', message);
+    return;
+  }
+  if (!message) {
+    hide(box);
+  } else {
+    box.textContent = message;
+    show(box);
+  }
+}
+
+function defaultEarthDate() {
+  // Curiosity landing anniversary often yields photos
+  return '2016-08-06';
 }
 
 function populateCameras() {
@@ -58,7 +79,7 @@ function populateCameras() {
   const camSel = $('#cameraSel');
   if (!roverSel || !camSel) return;
 
-  const rover = roverSel.value;
+  const rover = roverSel.value || 'curiosity';
   camSel.innerHTML = '';
   (CAMERA_OPTIONS[rover] || []).forEach((c, i) => {
     const opt = document.createElement('option');
@@ -69,10 +90,14 @@ function populateCameras() {
   });
 }
 
-function buildMarsUrl(rover, camera, earthDate) {
-  let url = `${ROVER_BASE_URL}/${rover}/photos?earth_date=${earthDate}&api_key=${API_KEY}`;
-  if (camera) url += `&camera=${camera}`;
-  return url;
+/* --------------------------- Data functions ------------------------- */
+
+function buildMarsUrl(rover = 'curiosity', camera, earthDate) {
+  const params = new URLSearchParams({ api_key: API_KEY });
+  if (earthDate) params.set('earth_date', earthDate);
+  if (camera) params.set('camera', camera);
+  // /rovers/{rover}/photos
+  return `${ROVER_BASE}/${rover}/photos?${params.toString()}`;
 }
 
 async function fetchPhotos(rover, camera, earthDate) {
@@ -87,20 +112,29 @@ async function fetchPhotos(rover, camera, earthDate) {
   return data.photos || [];
 }
 
+/* --------------------------- Render functions ----------------------- */
+
 function renderGrid(photos) {
   const grid = $('#grid');
+  const empty = $('#emptyState');
+  if (!grid) {
+    console.warn('Missing #grid container');
+    return;
+  }
+
   grid.innerHTML = '';
 
   if (!photos.length) {
-    show($('#emptyState'));
+    if (empty) show(empty);
     return;
-  } else {
-    hide($('#emptyState'));
+  } else if (empty) {
+    hide(empty);
   }
 
   photos.forEach((p) => {
     const card = document.createElement('article');
-    card.className = 'bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:bg-white/10 transition';
+    card.className =
+      'bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:bg-white/10 transition';
 
     const img = document.createElement('img');
     img.src = p.img_src;
@@ -121,46 +155,76 @@ function renderGrid(photos) {
     card.appendChild(meta);
 
     card.addEventListener('click', () => {
-      $('#modalImg').src = p.img_src;
-      $('#modalImg').alt = img.alt;
-      $('#modalTitle').textContent = `${p.rover?.name || 'Rover'} — ${p.camera?.full_name || p.camera?.name || ''}`;
-      $('#modalMeta').textContent = `Earth date: ${p.earth_date || ''} • Sol: ${p.sol ?? ''} • Status: ${p.rover?.status || ''}`;
-      openModal('', ''); // show modal (content already filled)
+      const modalImg = $('#modalImg');
+      const modalTitle = $('#modalTitle');
+      const modalMeta = $('#modalMeta');
+
+      if (modalImg) {
+        modalImg.src = p.img_src;
+        modalImg.alt = img.alt;
+      }
+      if (modalTitle) {
+        modalTitle.textContent = `${p.rover?.name || 'Rover'} — ${p.camera?.full_name || p.camera?.name || ''}`;
+      }
+      if (modalMeta) {
+        modalMeta.textContent = `Earth date: ${p.earth_date || ''} • Sol: ${p.sol ?? ''} • Status: ${p.rover?.status || ''}`;
+      }
+      // Content already filled; this just toggles visibility in your UI lib
+      openModal?.('', '');
     });
 
     grid.appendChild(card);
   });
 }
 
-function defaultEarthDate() {
-  return '2016-08-06'; // Curiosity landing anniversary (usually returns photos)
-}
+/* ------------------------------ Loader ------------------------------ */
 
 async function load() {
   setError('');
   setLoading(true);
   try {
-    const rover = $('#roverSel')?.value;
-    const camera = $('#cameraSel')?.value;
+    const rover = $('#roverSel')?.value || 'curiosity';
+    const camera = $('#cameraSel')?.value || '';
     const earthDate = $('#earthDate')?.value || defaultEarthDate();
+
     const photos = await fetchPhotos(rover, camera, earthDate);
     renderGrid(photos);
   } catch (e) {
     console.error(e);
-    setError('Could not load photos (try another date or use your own API key).');
-    show($('#emptyState'));
+
+    // Friendlier error messages
+    const msg = String(e);
+    if (/API_KEY_INVALID/.test(msg) || /403/.test(msg)) {
+      setError('Your NASA API key looks invalid or rate-limited. Try DEMO_KEY or replace with a valid key.');
+    } else if (/Failed to fetch|NetworkError/i.test(msg)) {
+      setError('Network error while fetching photos. Check your connection and try again.');
+    } else {
+      setError('Could not load photos (try another date or camera).');
+    }
+
+    const empty = $('#emptyState');
+    if (empty) show(empty);
   } finally {
     setLoading(false);
   }
 }
 
+/* ------------------------------ Init ------------------------------- */
+
 function initMars() {
-  populateCameras();
+  // Pre-fill date
   const dateInput = $('#earthDate');
-  if (dateInput) dateInput.value = defaultEarthDate();
+  if (dateInput && !dateInput.value) dateInput.value = defaultEarthDate();
+
+  // Populate cameras for selected rover (or default)
+  populateCameras();
+
+  // Wire up events
   $('#roverSel')?.addEventListener('change', populateCameras);
   $('#loadBtn')?.addEventListener('click', load);
-  load(); // initial load
+
+  // Initial load
+  load();
 }
 
 // Run when DOM is ready
