@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NASA Daily Explorer — Search</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-950 text-gray-100">
+  <!-- Navbar -->
+  <header class="border-b border-white/10">
+    <nav class="mx-auto max-w-6xl flex items-center justify-between p-4">
+      <a href="index.html" class="font-semibold tracking-wide">🚀 NASA Daily Explorer</a>
+      <ul class="flex gap-4 text-sm">
+        <li><a class="hover:underline" href="index.html">APOD</a></li>
+        <li><a class="hover:underline" href="mars.html">Mars</a></li>
+        <li><a class="hover:underline" href="asteroids.html">Asteroids</a></li>
+        <li><a class="hover:underline" href="search.html">Search</a></li>
+      </ul>
+      <button id="themeToggle" class="text-xs px-3 py-1 border border-white/20 rounded">Toggle Theme</button>
+    </nav>
+  </header>
+
+  <main class="mx-auto max-w-6xl p-4">
+    <!-- Controls -->
+    <section class="mb-4 grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+      <div class="md:col-span-3">
+        <label for="q" class="block text-xs text-gray-400 mb-1">Search NASA images</label>
+        <input id="q" type="text" placeholder="e.g., Mars rover, Orion, Saturn"
+               class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm" />
+      </div>
+      <div>
+        <label for="yearStart" class="block text-xs text-gray-400 mb-1">From year</label>
+        <input id="yearStart" type="number" min="1900" max="2100" placeholder="e.g., 1990"
+               class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm" />
+      </div>
+      <div>
+        <label for="yearEnd" class="block text-xs text-gray-400 mb-1">To year</label>
+        <input id="yearEnd" type="number" min="1900" max="2100" placeholder="e.g., 2025"
+               class="w-full bg-gray-900 border border-white/10 rounded px-3 py-2 text-sm" />
+      </div>
+      <div class="flex gap-2">
+        <button id="searchBtn" class="flex-1 px-4 py-2 text-sm rounded bg-white/10 hover:bg-white/20 transition">Search</button>
+        <span id="loading" class="text-xs text-gray-400 self-center hidden">Loading...</span>
+      </div>
+    </section>
+
+    <!-- States + Results -->
+    <section id="emptyState" class="hidden mt-8 text-center text-sm text-gray-400">
+      No results. Try a different keyword or year range.
+    </section>
+
+    <section id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></section>
+
+    <!-- Pagination -->
+    <div id="pager" class="hidden mt-6 flex items-center justify-between text-sm">
+      <button id="prevBtn" class="px-3 py-1.5 rounded border border-white/15 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed">← Prev</button>
+      <div class="text-gray-400">
+        Page <span id="pageNow">1</span><span id="pageTotalWrap" class="hidden"> of <span id="pageTotal">1</span></span>
+      </div>
+      <button id="nextBtn" class="px-3 py-1.5 rounded border border-white/15 hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed">Next →</button>
+    </div>
+
+    <!-- Error -->
+    <p id="errorBox" class="hidden mt-4 text-sm text-red-400"></p>
+  </main>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 hidden">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative mx-auto max-w-3xl bg-gray-900 border border-white/10 rounded-xl p-0 my-10 overflow-hidden">
+      <button id="modalClose" class="absolute top-2 right-3 text-xl z-10" aria-label="Close modal">&times;</button>
+      <img id="modalImg" alt="" class="w-full object-contain max-h-[70vh] bg-black" />
+      <div class="p-4">
+        <h2 id="modalTitle" class="text-lg font-semibold mb-1"></h2>
+        <p id="modalMeta" class="text-xs text-gray-400"></p>
+        <p id="modalBody" class="mt-2 text-sm text-gray-200"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="./src/search.js"></script>
+</body>
+</html>
