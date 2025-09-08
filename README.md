@@ -10,7 +10,10 @@ A minimalist, fast, dark-mode friendly space dashboard:
 HTML5, Tailwind (CDN, `darkMode: 'class'`), Vanilla JS modules, NASA APIs.
 
 ## Live Demo
-👉 <ADD YOUR GITHUB PAGES URL HERE>
+👉 
+[![Live Demo](https://img.shields.io/badge/Live-Demo-informational)](https://tanjya.github.io/nasa-portfolio/)
+[![Source](https://img.shields.io/badge/GitHub-Repo-black)](https://github.com/Tanjya/nasa-portfolio)
+
 
 ## Features
 - Class-based **theme toggle** (persists via `localStorage`)
