@@ -50,13 +50,15 @@
     <section id="emptyState" class="hidden mt-8 text-center text-sm text-gray-400">
       No photos for this selection. Try another date, rover, or camera.
     </section>
+
+    <!-- Results grid -->
     <section id="grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></section>
 
     <!-- Error -->
     <p id="errorBox" class="hidden mt-4 text-sm text-red-400"></p>
   </main>
 
-  <!-- Modal (shared design, but with image slot) -->
+  <!-- Modal -->
   <div id="modal" class="fixed inset-0 hidden">
     <div class="absolute inset-0 bg-black/70"></div>
     <div class="relative mx-auto max-w-3xl bg-gray-900 border border-white/10 rounded-xl p-0 my-10 overflow-hidden">
@@ -64,17 +66,14 @@
       <img id="modalImg" alt="" class="w-full object-contain max-h-[70vh] bg-black" />
       <div class="p-4">
         <h2 id="modalTitle" class="text-lg font-semibold mb-1"></h2>
+        <!-- Optional text body slot if you ever want it -->
+        <p id="modalBody" class="hidden"></p>
         <p id="modalMeta" class="text-xs text-gray-400"></p>
       </div>
     </div>
-    <div id="emptyState" class="hidden mt-6 text-gray-400">No photos for that date/camera.</div>
-
-<!-- Results grid -->
-<section id="grid" class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></section>
   </div>
 
   <!-- Scripts -->
-
   <script type="module" src="./src/mars.js"></script>
 </body>
 </html>
