@@ -25,10 +25,10 @@ Clone and open `index.html` locally (or via Live Server).
 
 ## Screenshots
 <div align="center">
-  <img src="nasa-daily-explorer/assets/apod.png" alt="APOD" width="45%"/>
-  <img src="nasa-daily-explorer/assets/mars.png" alt="Mars Rover Gallery" width="45%"/><br/>
-  <img src="nasa-daily-explorer/assets/asteroids.png" alt="Near-Earth Objects" width="45%"/>
-  <img src="nasa-daily-explorer/assets/search.png" alt="NASA Image Search" width="45%"/>
+  <img src="./nasa-daily-explorer/assets/" alt="APOD" width="45%"/>
+  <img src="./nasa-daily-explorer/assets/mars.png" alt="Mars Rover Gallery" width="45%"/><br/>
+  <img src="./nasa-daily-explorer/assets/asteroids.png" alt="Near-Earth Objects" width="45%"/>
+  <img src="./nasa-daily-explorer/assets/search.png" alt="NASA Image Search" width="45%"/>
 </div>
 
 ## License
