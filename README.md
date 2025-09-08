@@ -24,7 +24,12 @@ Clone and open `index.html` locally (or via Live Server).
 - Search page uses the public Images API (no key).
 
 ## Screenshots
-`/assets/` (APOD, Mars, Asteroids, Search)
+<div align="center">
+  <img src="assets/apod.png" alt="APOD" width="45%"/>
+  <img src="assets/mars.png" alt="Mars Rover Gallery" width="45%"/><br/>
+  <img src="assets/asteroids.png" alt="Near-Earth Objects" width="45%"/>
+  <img src="assets/search.png" alt="NASA Image Search" width="45%"/>
+</div>
 
 ## License
 MIT © Tanjya Akther
