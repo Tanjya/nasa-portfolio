@@ -1,28 +1,30 @@
-# 🌌 NASA Daily Explorer
+# NASA Daily Explorer
 
-An interactive **space data dashboard** powered by NASA’s public APIs.  
-Explore astronomy pictures, Mars rover photos, and asteroid tracking — all in one place.
+A minimalist, fast, dark-mode friendly space dashboard:
+- **APOD** (Astronomy Picture of the Day)
+- **Mars Rover Gallery** (filter by rover/camera/date)
+- **Near-Earth Objects** (7-day NEO feed with hazard & distance)
+- **NASA Image Search** (public images library)
 
----
+## Tech
+HTML5, Tailwind (CDN, `darkMode: 'class'`), Vanilla JS modules, NASA APIs.
 
-## ✨ Features
-- 📷 **Astronomy Picture of the Day (APOD)** – View today’s highlight with description & history search.
+## Live Demo
+👉 <ADD YOUR GITHUB PAGES URL HERE>
 
----
+## Features
+- Class-based **theme toggle** (persists via `localStorage`)
+- Robust loading/error/empty states
+- Accessible modals with keyboard/backdrop close
+- Clean, scalable componentized JS (`src/ui.js`, page modules)
 
-## 🛠️ Tech Stack
-- **Frontend**: HTML5, CSS (Tailwind), JavaScript (Vanilla JS + API fetch)
-- **APIs**: [NASA APOD](https://api.nasa.gov/planetary/apod)
-- **Version Control**: Git & GitHub
+## Getting Started
+Clone and open `index.html` locally (or via Live Server).
+- Add your NASA key in `src/mars.js` / `src/asteroids.js` if needed.
+- Search page uses the public Images API (no key).
 
----
+## Screenshots
+`/assets/` (APOD, Mars, Asteroids, Search)
 
-## 📂 Project Structure
-```bash
-nasa-project/
-│── index.html
-│── style.css
-│── script.js
-│── /assets        # images, icons
-│── /components    # modular JS
-│── README.md
+## License
+MIT © Tanjya Akther
