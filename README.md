@@ -23,8 +23,8 @@ Minimal, fast, dark-mode friendly dashboard for NASA data:
 - NASA APIs (APOD, Mars, NEO, Images Library)
 
 ## Live
-- **Demo:** <LIVE_URL>  
-- **Repo:** <REPO_URL>
+- **Demo:** <[(https://tanjya.github.io/nasa-portfolio]>  
+- **Repo:** <(https://github.com/Tanjya/nasa-portfolio)>
 
 ## Screenshots
 <div align="center">
